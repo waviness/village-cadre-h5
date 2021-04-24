@@ -1,0 +1,91 @@
+{
+	"easycom": {
+		"^u-(.*)": "@/uview-ui/components/u-$1/u-$1.vue"
+	},
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "登录",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/develope/develope",
+			"style": {
+				"navigationBarTitleText": "开发中",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/moments/publish",
+			"style": {
+				"navigationBarTitleText": "动态发布",
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/peace/publish",
+			"style": {
+				"navigationBarTitleText": "矛盾调解",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/event/publish",
+			"style": {
+				"navigationBarTitleText": "事件上报",
+				"enablePullDownRefresh": false
+			}
+		}
+	],
+	"subPackages": [{
+		"root": "pages/mailBox",
+		"pages": [{
+			"path": "mailBox",
+			"style": {
+				"navigationBarTitleText": "书记信箱",
+				"navigationBarBackgroundColor": "#FFFFFF",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "mailReply/mailReply",
+			"style": {
+				"navigationBarTitleText": "信件处理",
+				"navigationBarBackgroundColor": "#F2F2F6",
+				"enablePullDownRefresh": false
+			}
+
+		}]
+	}, {
+		"root": "pages/publish",
+		"pages": [{
+			"path": "village",
+			"style": {
+				"navigationBarTitleText": "发布",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "finance",
+			"style": {
+				"navigationBarTitleText": "发布",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "party",
+			"style": {
+				"navigationBarTitleText": "发布",
+				"enablePullDownRefresh": false
+			}
+
+		}]
+	}],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "横溪坞村",
+		"navigationBarBackgroundColor": "#FFFFFF",
+		"backgroundColor": "#F8F8F8"
+	}
+}
