@@ -53,6 +53,9 @@
 <style>
 	/*每个页面公共css */
 	@import url('common/css/reset.less');
+	uni-page-head {
+		display: none;
+	}
 </style>
 
 <style lang="scss">
