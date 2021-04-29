@@ -17,25 +17,6 @@
 				"enablePullDownRefresh": false
 			}
 
-		}, {
-			"path": "pages/moments/publish",
-			"style": {
-				"navigationBarTitleText": "动态发布",
-				"enablePullDownRefresh": false
-			}
-		}, {
-			"path": "pages/peace/publish",
-			"style": {
-				"navigationBarTitleText": "矛盾调解",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "pages/event/publish",
-			"style": {
-				"navigationBarTitleText": "事件上报",
-				"enablePullDownRefresh": false
-			}
 		}
 	],
 	"subPackages": [{
