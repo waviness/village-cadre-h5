@@ -1,50 +1,14 @@
 <template>
-	<view class="container">
-		<view class="publish">
-			<view class="fs-16 bold">财务公开</view>
-			<view class="publish-title">
-				<view class="publish-title__name">标题：</view>
-				<view class="publish-title__input">
-					<u-input v-model="title" class="" placeholder="输入标题名称" type="text" :border="border" maxlength="30"
-						:clearable="clearable" />
-				</view>
-			</view>
-			<view class="publish-textarea">
-				<u-input v-model="content" type="textarea" placeholder="在此输入详细内容…" :border="border" height="184"
-					auto-height="true" :clearable="clearable" maxlength="300" />
-			</view>
-			<view class="publish__desc" style="margin-bottom: 0;">选择标签</view>
-			<tag-radio :list="tagOptions" :current="tagCurrent" small="true" @tagClick="onTagChange" />
-			<view class="publish__desc">上传图片</view>
-			<u-upload ref="uUpload" :action="action" :auto-upload="true" :custom-btn="true" width="160" height="160">
-				<view slot="addBtn" class="slot-btn" hover-class="slot-btn__hover" hover-stay-time="150">
-					+
-				</view>
-			</u-upload>
-			<u-line color="#BEBEBE" margin="40rpx 0 0 0" />
-			<view class="publish__desc">消息推送</view>
-			<u-checkbox-group active-color="#5FC2FF">
-				<u-checkbox shape="circle" v-model="item.checked" v-for="(item, index) in messageOptions" :key="index"
-					:name="item.name">
-					{{item.name}}
-				</u-checkbox>
-			</u-checkbox-group>
-			<view class="publish-switch">
-				<view class="publish-switch__name">同步至首页</view>
-				<view class="">
-					<u-switch v-model="syncToIndex" active-color="#5FC2FF"></u-switch>
-				</view>
-			</view>
-			<view class="publish-switch">
-				<view class="publish-switch__name">置顶</view>
-				<view class="">
-					<u-switch v-model="isTop" active-color="#5FC2FF"></u-switch>
-				</view>
-			</view>
+	<view class="feedback">
+		<view class="feedback__title">问题和意见</view>
+		<view class="feedback__text">
+			<u-input v-model="feedbackContent" :type="type" :maxlength="1000" :border="border" :height="height" :auto-height="autoHeight" />
 		</view>
-		<view class="publish-btn">
-			<u-button type="primary" shape="circle" @click="submit">发布</u-button>
+		<view class="feedback__title">图片（上传问题截图）</view>
+		<view class="feedback__imgs">
+			<u-upload ref="uUpload" :action="action" :auto-upload="false"></u-upload>
 		</view>
+		<button type="primary" @click="submit">提交反馈</button>
 	</view>
 </template>
 
@@ -52,179 +16,60 @@
 	export default {
 		data() {
 			return {
-				title: '',
-				content: '',
-				tagOptions: [],
-				publishCurrent: 0,
-				tagCurrent: 0,
+				feedbackContent: '',
+				type: 'textarea',
 				border: false,
-				clearable: false,
-				action: 'https://testing2.kpdv.cc/cad-api/file/upload',
-				filesArr: [],
-				messageOptions: [
-					{
-						name: '微信服务号提醒',
-						checked: false,
-						disabled: false
-					},
-					{
-						name: '短信提醒',
-						checked: false,
-						disabled: false
-					}
-				],
-				syncToIndex: false,
-				isTop: false,
+				height: 160,
+				autoHeight: true,
+				action: '',
+				fileList: [],
+				flag: true // 用于提交反馈节流
 			}
 		},
-		onLoad() {
-			uni.setNavigationBarColor({
-				backgroundColor: '#F2F2F6',
-				frontColor: '#000000'
-			})
-			this.getTag()
-		},
 		methods: {
-			async getTag() {
-				const res = await this.$api.getTag({
-					type: 31
-				})
-				this.tagOptions = res
-			},
-			onTagChange(index) {
-				this.tagCurrent = index
-			},
-			init() {
-				this.title = ''
-				this.content = ''
-				this.tagCurrent = 0
-				this.syncToIndex = false
-				this.isTop = false
-				this.$refs.uUpload.clear()
-				this.messageOptions.forEach(item => item.checked = false)
-			},
-			async submit() {
-				let files = []
-				// 通过filter，筛选出上传进度为100的文件(因为某些上传失败的文件，进度值不为100，这个是可选的操作)
-				files = this.$refs.uUpload.lists.filter(val => {
-					return val.progress == 100
-				})
-				console.log(files)
-				const imgs = files.map(item => {
-					return item.response.data.link
-				})
-				console.log(imgs)
-				const params = {
-					title: this.title,
-					content: this.content,
-					imgs,
-					notifySms: this.messageOptions[1].checked,
-					notifyWx: this.messageOptions[0].checked,
-					onTop: this.isTop ? 1 : 0,
-					syncIdx: this.syncToIndex ? 1 : 0,
-					type: 31,
-					tagId: this.tagOptions[this.tagCurrent].id
-				}
-				console.log(params)
-				const res = await this.$api.addMoments(params)
-				if (res) {
-					uni.showToast({
-						icon: 'none',
-						title: '发布成功',
-						duration: 2000
+			submit() {
+				if (this.flag) {
+					this.flag = false;
+					uni.showLoading();
+					let files = [];
+					// 通过filter，筛选出上传进度为100的文件(因为某些上传失败的文件，进度值不为100，这个是可选的操作)
+					files = this.$refs.uUpload.lists.filter(val => {
+						return val.progress == 100;
 					})
-					this.init()
+					// 如果您不需要进行太多的处理，直接如下即可
+					// files = this.$refs.uUpload.lists;
+					console.log(files)
+					console.log(this.feedbackContent)
+					setTimeout(() => {
+						uni.hideLoading()
+						uni.showToast({
+							title: '提交成功',
+							icon: 'success'
+						});
+						this.flag = true;
+					}, 1000);
 				}
-			},
+			}
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
-	.container {
-		padding: 24rpx;
-		padding-bottom: 200rpx;
-		box-sizing: border-box;
-	}
-
-	.publish {
-		border-radius: 16rpx;
-		background-color: #fff;
-		padding: 32rpx 24rpx;
-
-		&-title {
-			display: flex;
-			align-items: center;
-			margin-top: 48rpx;
-
-			&__name {
-				font-size: 32rpx;
-			}
-
-			&__input {
-				flex: 1;
-				@include input-border;
-			}
+	.feedback {
+		&__title {
+			line-height: 90rpx;
+			padding-left: 24rpx;
 		}
 
-		&-textarea {
-			@include input-border;
-			margin-top: 32rpx;
+		&__text {
+			background-color: #fff;
+			padding: 16rpx 24rpx;
+			font-size: 30rpx;
 		}
 
-		&__desc {
-			margin: 48rpx 0 32rpx 0;
-			font-size: 32rpx;
+		&__imgs {
+			background-color: #fff;
+			padding: 16rpx;
 		}
-
-		&-select {
-			width: 100%;
-			height: 80rpx;
-			border: 2rpx solid #DBDBDB;
-			border-radius: 16rpx;
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			padding: 0 24rpx;
-			box-sizing: border-box;
-
-			&__placeholder {
-				color: #757575;
-				font-size: 26rpx;
-			}
-
-			image {
-				width: 40rpx;
-				height: 40rpx;
-			}
-		}
-
-		&-switch {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			margin-top: 72rpx;
-		}
-
-		&-btn {
-			padding: 64rpx 72rpx;
-			position: fixed;
-			bottom: 0;
-			left: 0;
-			width: 100%;
-			box-sizing: border-box;
-			z-index: 999;
-		}
-	}
-
-	.slot-btn {
-		width: 160rpx;
-		height: 160rpx;
-		color: #888;
-		font-size: 100rpx;
-		line-height: 140rpx;
-		text-align: center;
-		background: #E3E3E3;
-		border-radius: 16rpx;
 	}
 </style>

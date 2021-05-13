@@ -208,9 +208,9 @@
 
 		&-btn {
 			padding: 64rpx 72rpx;
-			position: fixed;
-			bottom: 0;
-			left: 0;
+			// position: fixed;
+			// bottom: 0;
+			// left: 0;
 			width: 100%;
 			box-sizing: border-box;
 			z-index: 999;
